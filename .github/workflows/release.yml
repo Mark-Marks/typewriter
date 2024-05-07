@@ -1,0 +1,62 @@
+name: Release
+
+on:
+    push:
+        tags: ["v*"]
+
+jobs:
+    build-typewriter:
+        name: Build Typewriter
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Project
+              uses: actions/checkout@v3
+
+            - name: Install Aftman
+              uses: ok-nick/setup-aftman@v0.3.0
+
+            - name: Build Matter
+              run: rojo build -vvvv -o typewriter.rbxm default.project.json
+
+            - name: Upload Build Artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: typewriter
+                  path: typewriter.rbxm
+
+    release:
+        name: Release
+        needs: [build-typewriter]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Project
+              uses: actions/checkout@v3
+
+            - name: Download Typewriter Build
+              uses: actions/download-artifact@v3
+              with:
+                  name: typewriter
+                  path: typewriter.rbxm
+
+            - name: Create Release
+              uses: softprops/action-gh-release@v1
+              with:
+                  name: Typewriter ${{ github.ref }}
+                  body: |
+                      Typewriter ${{ github.ref }} is now available!
+                  files: |
+                      typewriter.rbxm
+
+    publish:
+        name: Publish
+        needs: [release]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Project
+              uses: actions/checkout@v3
+
+            - name: Install Aftman
+              uses: ok-nick/setup-aftman@v0.3.0
+
+            - name: Publish Typewriter
+              run: wally publish --token ${{ secrets.WALLY_TOKEN }}
