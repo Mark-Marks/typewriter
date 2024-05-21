@@ -1,5 +1,5 @@
 {
     "luau-lsp.sourcemap.enabled": true,
     "luau-lsp.plugin.enabled": false,
-    "luau-lsp.types.roblox": true
+    "luau-lsp.types.roblox": true,
 }
