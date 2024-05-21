@@ -200,6 +200,9 @@ local function stream(self: server, player: Player, dialogue: part)
 	end
 end
 
+--- Constructs the server.
+--- @param options options -- Options for the server.
+--- @return server
 return function(options: options): server
 	if not options.net then
 		local net = net.server()
@@ -210,7 +213,7 @@ return function(options: options): server
 	end
 
 	local net = options.net
-	assert(net)
+	assert(net, "[?] this should never happen, please contact the creator of typewriter immediately if it does")
 
 	local server: server = {
 		net = net,
